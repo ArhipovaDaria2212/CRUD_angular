@@ -1,0 +1,54 @@
+<div>
+    <div class="position-absolute container modal-open">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>The best people of the company</h4>
+                <button class="btn btn-danger">Close</button>
+            </div>
+            <div class="card-body">
+
+                <div *ngIf="isLoading; else displayForm">
+                    <app-spinner />
+                </div>
+                <ng-template #displayForm>
+                    <form (ngSubmit)="savePerson()" name="form">
+                        <div class="mb-3">
+                            <label for="firstname">First name</label>
+                            <input type="text" [(ngModel)]="firstname" #firstnameInput="ngModel" id="firstname"
+                                name="firstname" class="form-control" required />
+                            <div *ngIf="(firstnameInput.dirty || firstnameInput.touched) && firstnameInput.errors?.['required']"
+                                class="text-danger">
+                                The firstname field is required.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastname">Last name</label>
+                            <input type="text" [(ngModel)]="lastname" #lastnameInput="ngModel" id="lastname"
+                                name="lastname" class="form-control" required />
+                            <div *ngIf="(lastnameInput.dirty || lastnameInput.touched) && lastnameInput.errors?.['required']"
+                                class="text-danger">
+                                The lastname field is required.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input type="text" [(ngModel)]="email" id="email" name="email" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="age">Age</label>
+                            <input type="text" [(ngModel)]="age" id="age" name="age" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gender">Gender</label>
+                            <input type="text" [(ngModel)]="gender" id="gender" name="gender" class="form-control" />
+                        </div>
+                        <div class="mb-3 mt-4">
+                            <button class="btn btn-primary" type="submit">Save</button>
+                        </div>
+                    </form>
+                </ng-template>
+
+            </div>
+        </div>
+    </div>
+</div>
