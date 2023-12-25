@@ -63,7 +63,7 @@ export class AddUserComponent {
     if (!this.isError) {
       this.isLoading = true;
       this.userService.saveUser(data).subscribe({
-        next: (res: any) => {
+        next: () => {
 
           this.isLoading = false;
 
@@ -76,14 +76,12 @@ export class AddUserComponent {
           this.toastr.success("The user has been successfully added!", "SUCCESS");
         },
 
-        error: (err: any) => {
+        error: () => {
           this.isLoading = false;
 
           this.toastr.error("Failed to add a user!", "ERROR");
         }
       });
-
     }
-
   }
 }

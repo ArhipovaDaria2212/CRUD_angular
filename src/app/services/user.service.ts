@@ -17,7 +17,7 @@ export interface User {
 
 export class UserService {
 
-  private url: string = "https://crudcrud.com/api/2a817f332f4a47dbb679c8f0ce73860/user";
+  private url: string = "https://crudcrud.com/api/6165fcb9d93541bb925264677df916c3/user";
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };

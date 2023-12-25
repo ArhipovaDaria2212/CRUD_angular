@@ -30,7 +30,6 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      timeOut: 2500,
       positionClass: "toast-bottom-right",
       maxOpened: 5
     }),
