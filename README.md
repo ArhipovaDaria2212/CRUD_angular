@@ -23,7 +23,8 @@ The API URL is taken from the crudcrud service and is updated every 24 hours. To
 Add a new entry
 
 body: 
-```{
+```
+{
   "firstname": "Homer",
   "lastname": "Simpson",
   "email": "homer.s@gmail.com",
@@ -41,7 +42,8 @@ Get all records
 Edit one entry
 
 body: 
-```{
+```
+{
   "firstname": "Homer",
   "lastname": "Simpson",
   "email": "homer.s@gmail.com",
