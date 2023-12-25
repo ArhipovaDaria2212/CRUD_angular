@@ -9,6 +9,7 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 import { AddPersonComponent } from './components/add-person/add-person.component';
 import { PersonComponent } from './components/person/person.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { UsersInfoComponent } from './components/users-info/users-info.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     MainPageComponent,
     AddPersonComponent,
     PersonComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    UsersInfoComponent
   ],
   imports: [
     BrowserModule,
