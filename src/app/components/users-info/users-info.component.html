@@ -1,9 +1,9 @@
-<div>
-    <div class="container mt-5">
+<div class="pt-5">
+    <div class="container">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4>The best people of the company</h4>
-                <a routerLink="/add" class="btn btn-primary">Add user</a>
+                <button mat-raised-button (click)="openDialog()" class="btn btn-primary">Add user</button>
             </div>
 
             <div class="card-body">
@@ -27,23 +27,23 @@
                             <tr *ngFor="let user of this.users">
                                 <td>
                                     <input type="text" name="firstname" [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.firstname" class="border-0">
+                                        [(ngModel)]="user.firstname" class="form-control">
                                 </td>
                                 <td>
                                     <input type="text" name="lastname" [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.lastname" class="border-0">
+                                        [(ngModel)]="user.lastname" class="form-control">
                                 </td>
                                 <td>
                                     <input type="email" name="email" [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.email" class="border-0">
+                                        [(ngModel)]="user.email" class="form-control">
                                 </td>
                                 <td>
                                     <input type="number" name="age" [readonly]="!user.isEditing" [(ngModel)]="user.age"
-                                        class="border-0">
+                                        class="form-control">
                                 </td>
                                 <td>
                                     <select name="gender" [disabled]="!user.isEditing" [(ngModel)]="user.gender"
-                                        class="border-0">
+                                        class="form-select">
                                         <option value="male">male</option>
                                         <option value="female">female</option>
                                     </select>

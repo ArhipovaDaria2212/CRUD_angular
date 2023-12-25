@@ -1,11 +1,9 @@
-.container {
-    max-width: 50vw;
-    top: 10vh;
-    left: 25vw;
-    scroll-behavior: unset;
+#firstname,
+#lastname {
+    margin-bottom: 40px;
 }
 
-body.modal-open {
-    position: fixed;
-    overflow: hidden;
+form .text-danger {
+    position: absolute;
+    bottom: -25px;
 }

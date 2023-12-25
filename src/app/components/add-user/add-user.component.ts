@@ -1,15 +1,23 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 
+import { Inject } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
-  styleUrls: ['./add-user.component.css']
+  styleUrls: ['./add-user.component.css'],
 })
 
 export class AddUserComponent {
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, public dialogRef: MatDialogRef<AddUserComponent>) { }
 
   firstname!: string
   lastname!: string
@@ -17,6 +25,10 @@ export class AddUserComponent {
   age!: string
   gender!: string
   isLoading: boolean = false
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 
   saveUser() {
 
