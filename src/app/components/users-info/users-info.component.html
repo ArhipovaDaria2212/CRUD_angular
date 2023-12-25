@@ -25,13 +25,34 @@
 
                         <tbody>
                             <tr *ngFor="let user of this.users">
-                                <td>{{user.firstname}}</td>
-                                <td>{{user.lastname}}</td>
-                                <td>{{user.email}}</td>
-                                <td>{{user.age}}</td>
-                                <td>{{user.gender}}</td>
                                 <td>
-                                    <button class="btn btn-success d-inline-block mr-4">Edit</button>
+                                    <input type="text" name="firstname" [readonly]="!user.isEditing"
+                                        [(ngModel)]="user.firstname" class="border-0">
+                                </td>
+                                <td>
+                                    <input type="text" name="lastname" [readonly]="!user.isEditing"
+                                        [(ngModel)]="user.lastname" class="border-0">
+                                </td>
+                                <td>
+                                    <input type="email" name="email" [readonly]="!user.isEditing"
+                                        [(ngModel)]="user.email" class="border-0">
+                                </td>
+                                <td>
+                                    <input type="number" name="age" [readonly]="!user.isEditing" [(ngModel)]="user.age"
+                                        class="border-0">
+                                </td>
+                                <td>
+                                    <select name="gender" [disabled]="!user.isEditing" [(ngModel)]="user.gender"
+                                        class="border-0">
+                                        <option value="male">male</option>
+                                        <option value="female">female</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button *ngIf="!user.isEditing" class="btn btn-primary d-inline-block mr-4"
+                                        (click)="this.editing(user)">Edit</button>
+                                    <button *ngIf="user.isEditing" class="btn btn-success d-inline-block mr-4"
+                                        (click)="this.changeUser($event, user)">Save</button>
                                     <button (click)="this.removeUser($event, user._id)" type="button"
                                         class="btn btn-danger">Delete</button>
                                 </td>

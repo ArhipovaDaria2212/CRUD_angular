@@ -11,7 +11,7 @@
                     <app-spinner />
                 </div>
                 <ng-template #displayForm>
-                    <form (ngSubmit)="savePerson()" name="form">
+                    <form name="form">
                         <div class="mb-3">
                             <label for="firstname">First name</label>
                             <input type="text" [(ngModel)]="firstname" #firstnameInput="ngModel" id="firstname"
@@ -43,7 +43,7 @@
                             <input type="text" [(ngModel)]="gender" id="gender" name="gender" class="form-control" />
                         </div>
                         <div class="mb-3 mt-4">
-                            <button class="btn btn-primary" type="submit">Save</button>
+                            <button (click)="this.saveUser()" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </ng-template>

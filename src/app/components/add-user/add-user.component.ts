@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { PersonService } from 'src/app/services/person.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: 'app-add-person',
-  templateUrl: './add-person.component.html',
-  styleUrls: ['./add-person.component.css']
+  selector: 'app-add-user',
+  templateUrl: './add-user.component.html',
+  styleUrls: ['./add-user.component.css']
 })
 
-export class AddPersonComponent {
+export class AddUserComponent {
 
-  constructor(private personService: PersonService) { }
+  constructor(private userService: UserService) { }
 
   firstname!: string
   lastname!: string
@@ -18,7 +18,7 @@ export class AddPersonComponent {
   gender!: string
   isLoading: boolean = false
 
-  savePerson() {
+  saveUser() {
 
     var data = {
       firstname: this.firstname,
@@ -32,13 +32,11 @@ export class AddPersonComponent {
 
       this.isLoading = true;
 
-      this.personService.savePerson(data).subscribe({
+      this.userService.saveUser(data).subscribe({
         next: (res: any) => {
           console.log(res, "response");
 
           this.isLoading = false;
-
-          // alert("The person is recorded");
 
           this.firstname = " ";
           this.lastname = " ";
