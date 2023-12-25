@@ -1,15 +1,9 @@
-import { Dialog } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { UserService, User } from 'src/app/services/user.service';
 import { AddUserComponent } from '../add-user/add-user.component';
+import { ToastrService } from 'ngx-toastr';
 
-import { Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-users-info',
@@ -19,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 export class UsersInfoComponent {
 
-  constructor(private userService: UserService, public dialog: MatDialog) { }
+  constructor(private userService: UserService, public dialog: MatDialog, private toastr: ToastrService) { }
 
   users!: User[];
   isLoading: boolean = true;
@@ -47,12 +41,10 @@ export class UsersInfoComponent {
   }
 
   removeUser(event: any, user: number) {
-    if (confirm("Are you sure you want to delete this data?")) {
-      event.target.innerText = "Deleting..."
-      this.userService.deleteUser(user).subscribe((res: any) => {
-        this.getUsersList();
-      });
-    }
+    event.target.innerText = "Deleting..."
+    this.userService.deleteUser(user).subscribe((res: any) => {
+      this.getUsersList();
+    });
   }
 
   editing(user: User) {

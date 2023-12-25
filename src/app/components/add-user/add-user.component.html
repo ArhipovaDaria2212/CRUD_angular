@@ -16,8 +16,9 @@
                             <label for="firstname">First name</label>
                             <input type="text" [(ngModel)]="firstname" #firstnameInput="ngModel" id="firstname"
                                 name="firstname" class="form-control" required />
-                            <div *ngIf="(firstnameInput.dirty || firstnameInput.touched) && firstnameInput.errors?.['required']"
-                                class="text-danger">
+                            <div *ngIf="(firstnameInput.dirty || firstnameInput.touched) && 
+                                        firstnameInput.errors?.['required'] ||
+                                        this.isError" class="text-danger">
                                 The firstname field is required.
                             </div>
                         </div>
@@ -25,8 +26,9 @@
                             <label for="lastname">Last name</label>
                             <input type="text" [(ngModel)]="lastname" #lastnameInput="ngModel" id="lastname"
                                 name="lastname" class="form-control" required />
-                            <div *ngIf="(lastnameInput.dirty || lastnameInput.touched) && lastnameInput.errors?.['required']"
-                                class="text-danger">
+                            <div *ngIf="(lastnameInput.dirty || lastnameInput.touched) && 
+                                        lastnameInput.errors?.['required'] ||
+                                        this.isError" class="text-danger">
                                 The lastname field is required.
                             </div>
                         </div>

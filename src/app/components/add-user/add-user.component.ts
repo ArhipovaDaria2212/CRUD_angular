@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 
-import { Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-user',
@@ -17,54 +12,77 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 export class AddUserComponent {
 
-  constructor(private userService: UserService, public dialogRef: MatDialogRef<AddUserComponent>) { }
+  constructor(private userService: UserService, public dialogRef: MatDialogRef<AddUserComponent>, private toastr: ToastrService) { }
 
   firstname!: string
   lastname!: string
   email!: string
-  age!: string
+  age!: number
   gender!: string
-  isLoading: boolean = false
+  isLoading = false
+  isError = false
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  saveUser() {
+  validateEmail(email: string) {
+    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regularExpression.test(String(email).toLowerCase());
+  }
 
-    var data = {
-      firstname: this.firstname,
-      lastname: this.lastname,
-      email: this.email,
-      age: this.age,
-      gender: this.gender
+  validateData() {
+
+    var error = false;
+
+    if (!this.validateEmail(this.email)) {
+      this.toastr.error("Check the validity of the entered email!", "Incorrect email!");
+      error = true;
     }
 
-    if (this.firstname && this.lastname) {
+    if (!Boolean(this.firstname && this.lastname)) {
+      this.toastr.error("You forgot about the first and last name (", "Incorrect data!");
+      error = true;
+    }
 
+    if (this.age > 120 || this.age < 1) {
+      this.toastr.error("You either can't type too well yet, or you're already dead (", "Incorrect data!");
+      error = true;
+    }
+
+    return !error;
+  }
+
+  saveUser() {
+
+    const { firstname, lastname, email, age, gender } = this;
+    const data = { firstname, lastname, email, age, gender };
+
+    this.isError = !this.validateData();
+
+    if (!this.isError) {
       this.isLoading = true;
-
       this.userService.saveUser(data).subscribe({
         next: (res: any) => {
-          console.log(res, "response");
 
           this.isLoading = false;
 
           this.firstname = " ";
           this.lastname = " ";
           this.email = "";
-          this.age = "";
+          this.age = NaN;
           this.gender = "";
-        },
-        error: (err: any) => {
-          console.log(err, "error");
 
+          this.toastr.success("The user has been successfully added!", "SUCCESS");
+        },
+
+        error: (err: any) => {
           this.isLoading = false;
+
+          this.toastr.error("Failed to add a user!", "ERROR");
         }
       });
 
-    } else {
-      alert("incorrect data");
     }
 
   }
