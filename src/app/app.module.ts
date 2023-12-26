@@ -31,7 +31,8 @@ import { ToastrModule } from 'ngx-toastr';
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       positionClass: "toast-bottom-right",
-      maxOpened: 5
+      maxOpened: 5,
+      preventDuplicates: true
     }),
     MatDialogModule,
     NgxPaginationModule

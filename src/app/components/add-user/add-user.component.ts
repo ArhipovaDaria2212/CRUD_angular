@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 
 import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -14,11 +15,14 @@ export class AddUserComponent {
 
   constructor(private userService: UserService, public dialogRef: MatDialogRef<AddUserComponent>, private toastr: ToastrService) { }
 
-  firstname!: string
-  lastname!: string
-  email!: string
-  age!: number
-  gender!: string
+  addUserForm = new FormGroup({
+    firstname: new FormControl('', [Validators.required]),
+    lastname: new FormControl('', [Validators.required]),
+    email: new FormControl('', Validators.email),
+    age: new FormControl(null, [Validators.pattern(/^[0-9]+$/), ageValidator(this.toastr)]),
+    gender: new FormControl(''),
+  });
+
   isLoading = false
   isError = false
 
@@ -26,62 +30,45 @@ export class AddUserComponent {
     this.dialogRef.close();
   }
 
-  validateEmail(email: string) {
-    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regularExpression.test(String(email).toLowerCase());
+  onSubmit() {
+
+    if (this.addUserForm.invalid) {
+      this.isError = true
+      this.toastr.error("Invalid data!", "ERROR");
+      return;
+    }
+
+    this.isLoading = true;
+    this.isError = false;
+
+    const data = {
+      firstname: this.addUserForm.controls.firstname.value,
+      lastname: this.addUserForm.controls.lastname.value,
+      email: this.addUserForm.controls.email.value,
+      age: this.addUserForm.controls.age.value,
+      gender: this.addUserForm.controls.gender.value
+    };
+
+    this.userService.addUser(data).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.addUserForm.reset();
+        this.toastr.success("The user has been successfully added!", "SUCCESS");
+      },
+
+      error: () => {
+        this.isLoading = false;
+        this.toastr.error("Failed to add a user!", "ERROR");
+      }
+    });
   }
+}
 
-  validateData() {
+function ageValidator(toastr: ToastrService): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const valid = control.value > 0 && control.value < 120 || control.value == null || control.value == "";
+    if (!valid) toastr.error("You either entered the wrong age, or you can't type too well yet, or you're already dead(", "Invalid age!");
 
-    var error = false;
-
-    if (!this.validateEmail(this.email)) {
-      this.toastr.error("Check the validity of the entered email!", "Incorrect email!");
-      error = true;
-    }
-
-    if (!Boolean(this.firstname && this.lastname)) {
-      this.toastr.error("You forgot about the first and last name (", "Incorrect data!");
-      error = true;
-    }
-
-    if (this.age > 120 || this.age < 1) {
-      this.toastr.error("You either can't type too well yet, or you're already dead (", "Incorrect data!");
-      error = true;
-    }
-
-    return !error;
-  }
-
-  saveUser() {
-
-    const { firstname, lastname, email, age, gender } = this;
-    const data = { firstname, lastname, email, age, gender };
-
-    this.isError = !this.validateData();
-
-    if (!this.isError) {
-      this.isLoading = true;
-      this.userService.saveUser(data).subscribe({
-        next: () => {
-
-          this.isLoading = false;
-
-          this.firstname = " ";
-          this.lastname = " ";
-          this.email = "";
-          this.age = NaN;
-          this.gender = "";
-
-          this.toastr.success("The user has been successfully added!", "SUCCESS");
-        },
-
-        error: () => {
-          this.isLoading = false;
-
-          this.toastr.error("Failed to add a user!", "ERROR");
-        }
-      });
-    }
-  }
+    return !valid ? { age: { invalid: true } } : null;
+  };
 }

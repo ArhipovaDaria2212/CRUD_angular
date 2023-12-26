@@ -5,6 +5,7 @@ import { AddUserComponent } from '../add-user/add-user.component';
 import { ToastrService } from 'ngx-toastr';
 
 import { MatDialog } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users-info',

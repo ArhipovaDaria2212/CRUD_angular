@@ -17,14 +17,14 @@ export interface User {
 
 export class UserService {
 
-  private url: string = "https://crudcrud.com/api/6165fcb9d93541bb925264677df916c3/user";
+  private url: string = "https://crudcrud.com/api/f69e4d939037473b8139bc5eb31c35b/user";
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   constructor(private httpClient: HttpClient) { }
 
-  saveUser(user: object) {
+  addUser(user: object) {
     return this.httpClient.post(this.url, user);
   }
 
