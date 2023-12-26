@@ -27,10 +27,10 @@
                             <tr *ngFor="let user of this.users | paginate: { itemsPerPage: 8, currentPage: p }">
                                 <td>
                                     <input type=" text" name="firstname" [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.firstname" class="form-control">
+                                        [(ngModel)]="user.firstname" required class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" name="lastname" [readonly]="!user.isEditing"
+                                    <input type="text" name="lastname" required [readonly]="!user.isEditing"
                                         [(ngModel)]="user.lastname" class="form-control">
                                 </td>
                                 <td>

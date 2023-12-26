@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { UsersInfoComponent } from '../users-info/users-info.component';
+import { FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 
 import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -13,7 +14,10 @@ import { ToastrService } from 'ngx-toastr';
 
 export class AddUserComponent {
 
-  constructor(private userService: UserService, public dialogRef: MatDialogRef<AddUserComponent>, private toastr: ToastrService) { }
+  constructor(private userService: UserService,
+    public dialogRef: MatDialogRef<AddUserComponent>,
+    private toastr: ToastrService,
+    private userInfo: UsersInfoComponent) { }
 
   addUserForm = new FormGroup({
     firstname: new FormControl('', [Validators.required]),
@@ -27,6 +31,7 @@ export class AddUserComponent {
   isError = false
 
   onNoClick(): void {
+    this.userInfo.getUsersList();
     this.dialogRef.close();
   }
 
@@ -53,6 +58,7 @@ export class AddUserComponent {
       next: () => {
         this.isLoading = false;
         this.addUserForm.reset();
+        this.userInfo.getUsersList();
         this.toastr.success("The user has been successfully added!", "SUCCESS");
       },
 

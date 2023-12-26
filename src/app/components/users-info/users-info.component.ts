@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { ElementRef, HostListener, Input } from '@angular/core';
 import { UserService, User } from 'src/app/services/user.service';
 import { AddUserComponent } from '../add-user/add-user.component';
 import { ToastrService } from 'ngx-toastr';
 
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users-info',
   templateUrl: './users-info.component.html',
   styleUrls: ['./users-info.component.css'],
+})
+
+@Injectable({
+  providedIn: 'root'
 })
 
 export class UsersInfoComponent {
@@ -40,6 +43,8 @@ export class UsersInfoComponent {
   }
 
   getUsersList() {
+    this.isLoading = true;
+
     this.userService.getUsers().subscribe(
       {
         next: (res: any) => {
@@ -65,7 +70,6 @@ export class UsersInfoComponent {
         this.toastr.warning(`The user with id ${id} has been deleted!`, "WARNING");
       }, error: () => {
         this.toastr.error(`Failed to delete user with id ${id}!`, "ERROR");
-        this.isError = true;
       }
     });
   }
@@ -84,17 +88,34 @@ export class UsersInfoComponent {
   }
 
   changeUser(event: any, user: User) {
+
+    if ((user.age < 1 || user.age > 120) && user.age != null) {
+      this.toastr.error(`You either entered the wrong age, or you can't type too well yet, or you're already dead(!`, "ERROR");
+      return;
+    }
+
+    const regex = new RegExp(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9]/);
+    if (!regex.test(user.email) && (user.email != "" && user.email != null)) {
+      this.toastr.error(`Invalid email!`, "ERROR");
+      return;
+    }
+
+    if (user.firstname == "" || user.lastname == "") {
+      this.toastr.error(`Firstname and lastname are required!`, "ERROR");
+      return;
+    }
+
     event.target.innerText = "Saving...";
+
     this.userService.editUser(user).subscribe({
       next: () => {
         this.getUsersList();
-        user.isEditing = false;
         event.target.innerText = "Save";
         this.toastr.success(`The user has been successfully changed!`, "SUCCESS");
+        user.isEditing = false;
       }, error: () => {
         this.toastr.error(`Failed to change user with id ${user._id}!`, "ERROR");
         user.isEditing = false;
-        this.isError = true;
       }
     });
   }
