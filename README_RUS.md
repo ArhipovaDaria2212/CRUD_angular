@@ -41,7 +41,8 @@ URL API берется с сервиса crudcrud и обновляется ка
 Редактирование одной записи
 
 тело:
-```{
+```
+{
   "firstname": "Homer",
   "lastname": "Simpson",
   "email": "homer.s@gmail.com",

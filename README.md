@@ -14,7 +14,7 @@ This application is a CRUD (Create, Read, Update, Delete) web application develo
 
 ## API Requests
 
-The API URL is taken from the crudcrud service and is updated every 24 hours. To get a new url, go to `https://crudcrud.com/`. Paste the new url in `crud\src\app\services\user.service.ts` into the url variable in the form `"link/user"`
+The API URL is taken from the crudcrud service and is updated every 24 hours. To get a new url, go to `https://crudcrud.com/`. Paste the new url in `crud\src\app\services\user.service.ts` into the url variable in the form `"(link)/user"`
 
 ### Description of requests
 
@@ -23,7 +23,8 @@ The API URL is taken from the crudcrud service and is updated every 24 hours. To
 Add a new entry
 
 body: 
-```{
+```
+{
   "firstname": "Homer",
   "lastname": "Simpson",
   "email": "homer.s@gmail.com",
@@ -41,7 +42,8 @@ Get all records
 Edit one entry
 
 body: 
-```{
+```
+{
   "firstname": "Homer",
   "lastname": "Simpson",
   "email": "homer.s@gmail.com",
