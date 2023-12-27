@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 import { ToastrService } from 'ngx-toastr';
 
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from 'src/app/services/user-service/user.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 
 @Component({

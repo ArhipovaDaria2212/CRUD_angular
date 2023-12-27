@@ -14,7 +14,7 @@
 
 ## API Запросы
 
-URL API берется с сервиса crudcrud и обновляется каждые 24 часа. Чтобы получить новый URL, перейдите по адресу `https://crudcrud.com/`. Вставьте новый URL в файл `crud\src\app\services\user.service.ts` в переменную url в формате `"(ссылка)/user"`
+URL API берется с сервиса crudcrud и обновляется каждые 24 часа. Чтобы получить новый URL, перейдите по адресу `https://crudcrud.com/`. Вставьте новый URL в файл `crud/src/app/services/user-service/user.service.ts` в переменную url в формате `"(ссылка)/user"`
 
 ### Описание запросов
 

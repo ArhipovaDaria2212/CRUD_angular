@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 
-import { UserService, User } from 'src/app/services/user.service';
+import { UserService, User } from 'src/app/services/user-service/user.service';
 import { AddUserComponent } from '../add-user/add-user.component';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 
