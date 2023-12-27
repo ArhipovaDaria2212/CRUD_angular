@@ -1,10 +1,12 @@
-import { Component, Injectable } from '@angular/core';
-import { ElementRef, HostListener, Input } from '@angular/core';
-import { UserService, User } from 'src/app/services/user.service';
-import { AddUserComponent } from '../add-user/add-user.component';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { ToastrService } from 'ngx-toastr';
 
-import { MatDialog } from '@angular/material/dialog';
+import { UserService, User } from 'src/app/services/user.service';
+import { AddUserComponent } from '../add-user/add-user.component';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 
 @Component({
   selector: 'app-users-info',
@@ -12,34 +14,23 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./users-info.component.css'],
 })
 
-@Injectable({
-  providedIn: 'root'
-})
-
 export class UsersInfoComponent {
 
-  constructor(private userService: UserService, public dialog: MatDialog, private toastr: ToastrService, private elementRef: ElementRef) { }
-
-  users!: User[];
+  userForms: FormGroup[] = [];
   oldUserObj!: User;
   isLoading: boolean = true;
-  isEditing: boolean = false;
   isError: boolean = false;
   p: number = 1;
 
+  constructor(
+    private userService: UserService,
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private formValidationService: FormValidationService
+  ) { }
+
   ngOnInit() {
     this.getUsersList();
-  }
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(AddUserComponent, {
-      width: '500px',
-      height: '590px',
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.getUsersList();
-    });
   }
 
   getUsersList() {
@@ -48,13 +39,16 @@ export class UsersInfoComponent {
     this.userService.getUsers().subscribe(
       {
         next: (res: any) => {
-          this.users = res;
-          this.users.forEach(user => {
-            user.isEditing = false
+          this.userForms = [];
+
+          res.forEach((user: User) => {
+            this.userForms.push(this.createUserGroup(user));
           });
+
           this.isLoading = false;
         }, error: () => {
           this.toastr.error("Error in receiving data!", "ERROR");
+
           this.isLoading = false;
           this.isError = true;
         }
@@ -62,7 +56,55 @@ export class UsersInfoComponent {
     );
   }
 
-  removeUser(event: any, id: number) {
+  createUserGroup(user: User): FormGroup {
+    return new FormBuilder().group({
+      _id: [user._id],
+      firstname: [{ value: user.firstname, disabled: true }, Validators.required],
+      lastname: [{ value: user.lastname, disabled: true }, Validators.required],
+      age: [
+        { value: user.age, disabled: true },
+        [Validators.pattern(/^[0-9]+$/),
+        this.formValidationService.ageValidator(this.toastr)]],
+      email: [{ value: user.email, disabled: true }, Validators.email],
+      gender: [{ value: user.gender, disabled: true }],
+    });
+  }
+
+  editing(userGroup: FormGroup) {
+    this.close();
+    this.oldUserObj = userGroup.getRawValue();
+    userGroup.enable();
+  }
+
+  close() {
+    this.userForms.forEach((userGroup: FormGroup) => {
+      if (userGroup.controls['firstname'].status != 'DISABLED') {
+        userGroup.patchValue(this.oldUserObj);
+      }
+      userGroup.disable();
+    });
+  }
+
+  changeUser(event: any, userGroup: FormGroup) {
+
+    if (!this.formValidationService.isFormValid(userGroup, this.toastr)) return;
+
+    event.target.innerText = "Saving...";
+    const user: User = userGroup.getRawValue();
+
+    this.userService.editUser(user).subscribe({
+      next: () => {
+        event.target.innerText = "Save";
+        this.toastr.success(`The user has been successfully changed!`, "SUCCESS");
+        userGroup.disable();
+      }, error: () => {
+        this.toastr.error(`Failed to change user with id ${userGroup.get('id')!.value}!`, "ERROR");
+        userGroup.disable();
+      }
+    });
+  }
+
+  removeUser(event: any, id: number, index: number) {
     event.target.innerText = "Deleting..."
     this.userService.deleteUser(id).subscribe({
       next: () => {
@@ -74,49 +116,14 @@ export class UsersInfoComponent {
     });
   }
 
-  close() {
-    this.users.forEach(user => {
-      if (user.isEditing) Object.assign(user, this.oldUserObj);
-      user.isEditing = false;
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddUserComponent, {
+      width: '500px',
+      height: '590px',
     });
-  }
 
-  editing(user: User) {
-    this.close();
-    this.oldUserObj = JSON.parse((JSON.stringify(user)));
-    user.isEditing = true;
-  }
-
-  changeUser(event: any, user: User) {
-
-    if ((user.age < 1 || user.age > 120) && user.age != null) {
-      this.toastr.error(`You either entered the wrong age, or you can't type too well yet, or you're already dead(!`, "ERROR");
-      return;
-    }
-
-    const regex = new RegExp(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9]/);
-    if (!regex.test(user.email) && (user.email != "" && user.email != null)) {
-      this.toastr.error(`Invalid email!`, "ERROR");
-      return;
-    }
-
-    if (user.firstname == "" || user.lastname == "") {
-      this.toastr.error(`Firstname and lastname are required!`, "ERROR");
-      return;
-    }
-
-    event.target.innerText = "Saving...";
-
-    this.userService.editUser(user).subscribe({
-      next: () => {
-        this.getUsersList();
-        event.target.innerText = "Save";
-        this.toastr.success(`The user has been successfully changed!`, "SUCCESS");
-        user.isEditing = false;
-      }, error: () => {
-        this.toastr.error(`Failed to change user with id ${user._id}!`, "ERROR");
-        user.isEditing = false;
-      }
+    dialogRef.afterClosed().subscribe(() => {
+      this.getUsersList();
     });
   }
 }

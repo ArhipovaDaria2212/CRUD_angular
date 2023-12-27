@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
-import { UsersInfoComponent } from '../users-info/users-info.component';
-import { FormControl, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+
 import { ToastrService } from 'ngx-toastr';
+
+import { UserService } from 'src/app/services/user.service';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 
 @Component({
   selector: 'app-add-user',
@@ -17,13 +18,13 @@ export class AddUserComponent {
   constructor(private userService: UserService,
     public dialogRef: MatDialogRef<AddUserComponent>,
     private toastr: ToastrService,
-    private userInfo: UsersInfoComponent) { }
+    private formValidationService: FormValidationService) { }
 
   addUserForm = new FormGroup({
     firstname: new FormControl('', [Validators.required]),
     lastname: new FormControl('', [Validators.required]),
     email: new FormControl('', Validators.email),
-    age: new FormControl(null, [Validators.pattern(/^[0-9]+$/), ageValidator(this.toastr)]),
+    age: new FormControl(null, [Validators.pattern(/^[0-9]+$/), this.formValidationService.ageValidator(this.toastr)]),
     gender: new FormControl(''),
   });
 
@@ -31,34 +32,23 @@ export class AddUserComponent {
   isError = false
 
   onNoClick(): void {
-    this.userInfo.getUsersList();
     this.dialogRef.close();
   }
 
   onSubmit() {
 
-    if (this.addUserForm.invalid) {
+    if (!this.formValidationService.isFormValid(this.addUserForm, this.toastr)) {
       this.isError = true
-      this.toastr.error("Invalid data!", "ERROR");
       return;
     }
 
     this.isLoading = true;
     this.isError = false;
 
-    const data = {
-      firstname: this.addUserForm.controls.firstname.value,
-      lastname: this.addUserForm.controls.lastname.value,
-      email: this.addUserForm.controls.email.value,
-      age: this.addUserForm.controls.age.value,
-      gender: this.addUserForm.controls.gender.value
-    };
-
-    this.userService.addUser(data).subscribe({
+    this.userService.addUser(this.addUserForm.getRawValue()).subscribe({
       next: () => {
         this.isLoading = false;
         this.addUserForm.reset();
-        this.userInfo.getUsersList();
         this.toastr.success("The user has been successfully added!", "SUCCESS");
       },
 
@@ -68,13 +58,4 @@ export class AddUserComponent {
       }
     });
   }
-}
-
-function ageValidator(toastr: ToastrService): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const valid = control.value > 0 && control.value < 120 || control.value == null || control.value == "";
-    if (!valid) toastr.error("You either entered the wrong age, or you can't type too well yet, or you're already dead(", "Invalid age!");
-
-    return !valid ? { age: { invalid: true } } : null;
-  };
 }

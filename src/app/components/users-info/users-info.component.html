@@ -24,45 +24,47 @@
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let user of this.users | paginate: { itemsPerPage: 8, currentPage: p }">
+                            <tr *ngFor="let i = index; let user of userForms | paginate: { itemsPerPage: 8, currentPage: p }"
+                                [formGroup]="userForms[i]">
                                 <td>
-                                    <input type=" text" name="firstname" [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.firstname" required class="form-control">
+                                    <input name="firstname" formControlName="firstname" class="form-control"
+                                        [class.invalid]="user.controls['firstname'].invalid">
                                 </td>
                                 <td>
-                                    <input type="text" name="lastname" required [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.lastname" class="form-control">
+                                    <input name="lastname" formControlName="lastname" class="form-control"
+                                        [class.invalid]="user.controls['lastname'].invalid">
                                 </td>
                                 <td>
-                                    <input type="email" name="email" [readonly]="!user.isEditing"
-                                        [(ngModel)]="user.email" class="form-control">
+                                    <input name="email" formControlName="email" class="form-control"
+                                        [class.invalid]="user.controls['email'].invalid">
                                 </td>
                                 <td>
-                                    <input type="number" name="age" [readonly]="!user.isEditing" [(ngModel)]="user.age"
-                                        class="form-control">
+                                    <input name="age" formControlName="age" class="form-control"
+                                        [class.invalid]="user.controls['age'].invalid">
                                 </td>
                                 <td>
-                                    <select name="gender" [disabled]="!user.isEditing" [(ngModel)]="user.gender"
-                                        class="form-select">
+                                    <select name="gender" formControlName="gender" class="form-select">
                                         <option value="male">male</option>
                                         <option value="female">female</option>
                                     </select>
                                 </td>
                                 <td class="actions-btn">
-                                    <button *ngIf="!user.isEditing" class="btn btn-primary d-inline-block mr-4"
+                                    <button *ngIf="user.controls['firstname'].disabled"
+                                        class="btn btn-primary d-inline-block mr-4"
                                         (click)="this.editing(user)">Edit</button>
-                                    <button *ngIf="user.isEditing" class="btn btn-success d-inline-block mr-4"
+                                    <button *ngIf="!user.controls['firstname'].disabled"
+                                        class="btn btn-success d-inline-block mr-4"
                                         (click)="this.changeUser($event, user)">Save</button>
-                                    <button *ngIf="!user.isEditing" (click)="this.removeUser($event, user._id)"
-                                        type="button" class="btn btn-danger">Delete</button>
-                                    <button *ngIf="user.isEditing" (click)="this.close()" type="button"
-                                        class="btn btn-secondary">Close</button>
+                                    <button *ngIf="user.controls['firstname'].disabled"
+                                        (click)="this.removeUser($event, user.controls['_id'].value, i)" type="button"
+                                        class="btn btn-danger">Delete</button>
+                                    <button *ngIf="!user.controls['firstname'].disabled" (click)="this.close()"
+                                        type="button" class="btn btn-secondary">Close</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <pagination-controls class="text-center" (pageChange)="p = $event"></pagination-controls>
-
                 </ng-template>
             </div>
             <div *ngIf="isError" class="text-center m-4">

@@ -8,7 +8,6 @@ export interface User {
   email: string
   age: number
   gender: string
-  isEditing: boolean
 }
 
 @Injectable({
@@ -17,7 +16,7 @@ export interface User {
 
 export class UserService {
 
-  private url: string = "https://crudcrud.com/api/52c05d3012084943a5990165bb88a732/user";
+  private url: string = "https://crudcrud.com/api/3562096a3a6f407f8956572be7c0889e/user";
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -37,7 +36,7 @@ export class UserService {
   }
 
   editUser(user: User) {
-    const { isEditing, _id, ...newUser } = user;
+    const { _id, ...newUser } = user;
     return this.httpClient.put(`${this.url}/${_id}`, newUser, this.httpOptions);
   }
 }
